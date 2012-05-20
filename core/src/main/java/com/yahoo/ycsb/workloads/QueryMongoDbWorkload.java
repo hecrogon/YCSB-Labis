@@ -458,6 +458,7 @@ public class QueryMongoDbWorkload extends Workload
 	 */
 	public boolean doInsert(DB db, Object threadstate)
 	{
+/*
 		int keynum=keysequence.nextInt();
 		String dbkey = buildKeyName(keynum);
 		HashMap<String, ByteIterator> values = buildValues();
@@ -465,6 +466,8 @@ public class QueryMongoDbWorkload extends Workload
 			return true;
 		else
 			return false;
+*/
+		return true;
 	}
 
 	/**
@@ -476,7 +479,7 @@ public class QueryMongoDbWorkload extends Workload
 	public boolean doTransaction(DB db, Object threadstate)
 	{
 		System.out.println("Transaction");
-		return false;
+		return true;
 	}
 
 	public void doTransactionRead(DB db)
