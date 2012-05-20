@@ -480,9 +480,11 @@ public class QueryMongoDbWorkload extends Workload
 	public boolean doTransaction(DB db, Object threadstate)
 	{
 		System.out.println("Transaction " + table);
-		table = "artedb";
-		db.read(table, "MUNICIPIOS", null, new HashMap<String,ByteIterator>());
+		table = "artepxs";
+		HashMap results = new HashMap<String, ByteIterator>();
+		db.read(table, "24230_ZOTES_DEL_PARAMO", null, results);
 
+		System.out.println("Res " + results.size());
 //		db.read(table,keyname,fields,new HashMap<String,ByteIterator>());
 		return true;
 	}

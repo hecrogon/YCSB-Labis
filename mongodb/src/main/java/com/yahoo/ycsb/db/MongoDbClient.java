@@ -179,7 +179,8 @@ public class MongoDbClient extends DB {
             db.requestStart();
 
             DBCollection collection = db.getCollection(table);
-            DBObject q = new BasicDBObject().append("_id", key);
+//            DBObject q = new BasicDBObject().append("_id", key);
+            DBObject q = new BasicDBObject().append("MUNICIPIOS", key);
             DBObject fieldsToReturn = new BasicDBObject();
             boolean returnAllFields = fields == null;
 
