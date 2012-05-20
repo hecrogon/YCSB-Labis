@@ -273,7 +273,7 @@ public class QueryMongoDbWorkload extends Workload
 	boolean orderedinserts;
 
 	int recordcount;
-	
+/*
 	protected static IntegerGenerator getFieldLengthGenerator(Properties p) throws WorkloadException{
 		IntegerGenerator fieldlengthgenerator;
 		String fieldlengthdistribution = p.getProperty(FIELD_LENGTH_DISTRIBUTION_PROPERTY, FIELD_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT);
@@ -296,7 +296,7 @@ public class QueryMongoDbWorkload extends Workload
 		}
 		return fieldlengthgenerator;
 	}
-	
+*/	
 	/**
 	 * Initialize the scenario. 
 	 * Called once, in the main client thread, before any operations are started.
@@ -458,6 +458,7 @@ public class QueryMongoDbWorkload extends Workload
 	 */
 	public boolean doInsert(DB db, Object threadstate)
 	{
+		System.out.println("Insert");
 /*
 		int keynum=keysequence.nextInt();
 		String dbkey = buildKeyName(keynum);
@@ -480,30 +481,5 @@ public class QueryMongoDbWorkload extends Workload
 	{
 		System.out.println("Transaction");
 		return true;
-	}
-
-	public void doTransactionRead(DB db)
-	{
-		System.out.println("TransactionRead");
-	}
-	
-	public void doTransactionReadModifyWrite(DB db)
-	{
-		System.out.println("TransactionModifyWrite");
-	}
-	
-	public void doTransactionScan(DB db)
-	{
-		System.out.println("TransactionScan");
-	}
-
-	public void doTransactionUpdate(DB db)
-	{
-		System.out.println("TransactionUpdate");
-	}
-
-	public void doTransactionInsert(DB db)
-	{
-		System.out.println("TransactionUpdate");
 	}
 }
