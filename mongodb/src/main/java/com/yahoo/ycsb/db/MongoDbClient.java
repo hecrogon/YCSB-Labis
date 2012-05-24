@@ -11,13 +11,15 @@ package com.yahoo.ycsb.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Map;
 import java.util.Vector;
 
-import org.bson.types.ObjectId;
+// import org.bson.*;
+// import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBAddress;
@@ -179,8 +181,7 @@ public class MongoDbClient extends DB {
             db.requestStart();
 
             DBCollection collection = db.getCollection(table);
-//            DBObject q = new BasicDBObject().append("_id", key);
-            DBObject q = new BasicDBObject().append("MUNICIPIOS", key);
+            DBObject q = new BasicDBObject().append("_id", key);
             DBObject fieldsToReturn = new BasicDBObject();
             boolean returnAllFields = fields == null;
 
@@ -210,6 +211,52 @@ public class MongoDbClient extends DB {
         }
     }
 
+    public int read(String table, HashMap<String, String> filters, Set<String> fields,
+            HashMap<String, ByteIterator> result) {
+        com.mongodb.DB db = null;
+        try {
+            db = mongo.getDB(database);
+
+            db.requestStart();
+
+            DBCollection collection = db.getCollection(table);
+//            DBObject q = new BasicDBObject().append("MUNICIPIOS", key);
+            DBObject q = new BasicDBObject();
+
+				Collection c = filters.keySet();
+            Iterator i = c.iterator();
+            while (i.hasNext()) {
+					q.put((String)i.next(), filters.get(i.next()));
+            }
+
+            DBObject fieldsToReturn = new BasicDBObject();
+            boolean returnAllFields = fields == null;
+
+            DBObject queryResult = null;
+            if (!returnAllFields) {
+                Iterator<String> iter = fields.iterator();
+                while (iter.hasNext()) {
+                    fieldsToReturn.put(iter.next(), 1);
+                }
+                queryResult = collection.findOne(q, fieldsToReturn);
+            } else {
+                queryResult = collection.findOne(q);
+            }
+
+            if (queryResult != null) {
+                result.putAll(queryResult.toMap());
+            }
+            return queryResult != null ? 0 : 1;
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            return 1;
+        } finally {
+            if (db!=null)
+            {
+                db.requestDone();
+            }
+        }
+    }
 
     @Override
     /**

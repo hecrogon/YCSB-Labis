@@ -91,6 +91,7 @@ public abstract class DB
 	 * @return Zero on success, a non-zero error code on error or "not found".
 	 */
 	public abstract int read(String table, String key, Set<String> fields, HashMap<String,ByteIterator> result);
+	public abstract int read(String table, HashMap<String, String> filters, Set<String> fields, HashMap<String,ByteIterator> result);
 
 	/**
 	 * Perform a range scan for a set of records in the database. Each field/value pair from the result will be stored in a HashMap.
