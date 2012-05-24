@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.Map;
 import java.util.Vector;
 
-// import org.bson.*;
-// import org.bson.types.ObjectId;
+import org.bson.*;
+import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBAddress;
