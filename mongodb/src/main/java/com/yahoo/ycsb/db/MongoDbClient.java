@@ -35,6 +35,7 @@ import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.ByteIterator;
 import com.yahoo.ycsb.StringByteIterator;
+import com.yahoo.ycsb.workloads.QueryMongoDbWorkload;
 
 /**
  * MongoDB client for YCSB framework.
@@ -53,6 +54,7 @@ public class MongoDbClient extends DB {
     private Mongo mongo;
     private WriteConcern writeConcern;
     private String database;
+    public HashMap filter;
 
     /**
      * Initialize any state for this DB. Called once per DB instance; there is
@@ -172,6 +174,7 @@ public class MongoDbClient extends DB {
      * @param result A HashMap of field/value pairs for the result
      * @return Zero on success, a non-zero error code on error or "not found".
      */
+/*
     public int read(String table, String key, Set<String> fields,
             HashMap<String, ByteIterator> result) {
         com.mongodb.DB db = null;
@@ -210,7 +213,52 @@ public class MongoDbClient extends DB {
             }
         }
     }
+*/
 
+    public int read(String table, String key, Set<String> fields,
+            HashMap<String, ByteIterator> result) {
+        com.mongodb.DB db = null;
+        try {
+            db = mongo.getDB(database);
+
+            db.requestStart();
+
+				String value = (String)QueryMongoDbWorkload.filter.get(key);
+
+            DBCollection collection = db.getCollection(table);
+//            DBObject q = new BasicDBObject().append("_id", key);
+            DBObject q = new BasicDBObject().append(key, value);
+            DBObject fieldsToReturn = new BasicDBObject();
+            boolean returnAllFields = fields == null;
+
+            DBObject queryResult = null;
+            if (!returnAllFields) {
+                Iterator<String> iter = fields.iterator();
+                while (iter.hasNext()) {
+                    fieldsToReturn.put(iter.next(), 1);
+                }
+                queryResult = collection.findOne(q, fieldsToReturn);
+            } else {
+                queryResult = collection.findOne(q);
+            }
+
+            if (queryResult != null) {
+                result.putAll(queryResult.toMap());
+            }
+            return queryResult != null ? 0 : 1;
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            return 1;
+        } finally {
+            if (db!=null)
+            {
+                db.requestDone();
+            }
+        }
+    }
+
+
+/*
     public int read(String table, HashMap<String, String> filters, Set<String> fields,
             HashMap<String, ByteIterator> result) {
         com.mongodb.DB db = null;
@@ -257,6 +305,7 @@ public class MongoDbClient extends DB {
             }
         }
     }
+*/
 
     @Override
     /**

@@ -38,16 +38,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
 
-//import org.bson.*;
-//import org.bson.types.ObjectId;
-
 public class QueryMongoDbWorkload extends Workload
 {
 	public static String table;
+	public static HashMap filter;
 
 	public void init(Properties p) throws WorkloadException
 	{
 		System.out.println("INIT1");
+		filter = new HashMap<String, String>();
+		filter.put("MUNICIPIOS", "24230_ZOTES_DEL_PARAMO");
 	}
 
 	public boolean doInsert(DB db, Object threadstate)
@@ -67,12 +67,9 @@ public class QueryMongoDbWorkload extends Workload
 		table = "artepxs";
 
 		HashMap results = new HashMap<String, ByteIterator>();
-		HashMap filters = new HashMap<String, String>();
-		filters.put("MUNICIPIOS", "24230_ZOTES_DEL_PARAMO");
-		db.read(table, filters, null, results);
+		db.read(table, "MUNICIPIOS", null, results);
 
 		System.out.println("Res " + results.size());
-//		db.read(table,keyname,fields,new HashMap<String,ByteIterator>());
 		return true;
 	}
 }
