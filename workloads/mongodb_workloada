@@ -35,3 +35,7 @@ insertproportion=0
 
 requestdistribution=zipfian
 
+queries=2
+query1={"MUNICIPIOS": "24230_ZOTES_DEL_PARAMO"}
+query2={"MUNICIPIOS": "24002_ALGADEFE"}
+

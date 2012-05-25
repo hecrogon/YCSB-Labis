@@ -46,7 +46,16 @@ public class QueryMongoDbWorkload extends Workload
 
 	public void init(Properties p) throws WorkloadException
 	{
-		System.out.println("INIT1");
+		System.out.println("Init MongoDb Queries");
+
+		int numqueries = Integer.parseInt(p.getProperty("queries"));
+		for (int i = 0; i < numqueries; i++)
+		{
+			String p1 = p.getProperty("query" + i);
+			System.out.println("I1 " + p1);
+		}
+
+
 		filter = new HashMap<String, String>();
 		filters = new HashMap<String, String>();
 		filter.put("MUNICIPIOS", "24230_ZOTES_DEL_PARAMO");
