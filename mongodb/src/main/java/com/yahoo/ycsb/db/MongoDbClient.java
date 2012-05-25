@@ -223,11 +223,23 @@ public class MongoDbClient extends DB {
 
             db.requestStart();
 
-				String value = (String)QueryMongoDbWorkload.filter.get(key);
+				HashMap filter = (HashMap)QueryMongoDbWorkload.filters.get(key);
 
             DBCollection collection = db.getCollection(table);
-//            DBObject q = new BasicDBObject().append("_id", key);
-            DBObject q = new BasicDBObject().append(key, value);
+//            DBObject q = new BasicDBObject().append("_id", key);				
+
+            DBObject q = new BasicDBObject();
+
+				Collection c = filter.keySet();
+            Iterator i = c.iterator();
+            while (i.hasNext()) {
+					String k = (String)i.next();
+				   System.out.println("A0 " + k + " " + filter.get(k));
+					q.put(k, filter.get(k));
+            }
+
+  //          DBObject q = new BasicDBObject().append(key, value);
+				System.out.println("A1 " + q.toString());
             DBObject fieldsToReturn = new BasicDBObject();
             boolean returnAllFields = fields == null;
 
