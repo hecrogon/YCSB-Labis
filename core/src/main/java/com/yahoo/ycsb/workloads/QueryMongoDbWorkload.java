@@ -36,12 +36,14 @@ import com.yahoo.ycsb.measurements.Measurements;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Vector;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class QueryMongoDbWorkload extends Workload
 {
+	public static int numqueries;
 	public static String table;
 	public static HashMap filter;
 	public static HashMap filters;
@@ -51,7 +53,7 @@ public class QueryMongoDbWorkload extends Workload
 		System.out.println("Init MongoDb Queries");
 		filters = new HashMap<String, HashMap>();
 
-		int numqueries = Integer.parseInt(p.getProperty("queries"));
+		numqueries = Integer.parseInt(p.getProperty("queries"));
 		for (int i = 1; i <= numqueries; i++)
 		{
 			String query = p.getProperty("query" + i);
@@ -86,9 +88,15 @@ public class QueryMongoDbWorkload extends Workload
 		table = "artepxs";
 
 		HashMap results = new HashMap<String, ByteIterator>();
-		db.read(table, "1", null, results);
 
-		System.out.println("Res " + results.size());
+      Random random = new Random();
+      int min = 1;
+		int max = numqueries;
+		int randomNum = random.nextInt(max - min + 1) + min;
+
+		db.read(table, String.valueOf(randomNum), null, results);
+
+		System.out.println("Res " + randomNum + " " + results.size());
 		return true;
 	}
 }

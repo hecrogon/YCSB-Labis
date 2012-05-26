@@ -223,9 +223,7 @@ public class MongoDbClient extends DB {
 
             db.requestStart();
 
-				System.out.println("U1");
 				HashMap<String, Object> filter = (HashMap)QueryMongoDbWorkload.filters.get(key);
-				System.out.println("U2");
 
             DBCollection collection = db.getCollection(table);
 //            DBObject q = new BasicDBObject().append("_id", key);				
@@ -240,7 +238,7 @@ public class MongoDbClient extends DB {
             }
 
   //          DBObject q = new BasicDBObject().append(key, value);
-				System.out.println("A1 " + q.toString());
+				System.out.println("Query: " + q.toString());
             DBObject fieldsToReturn = new BasicDBObject();
             boolean returnAllFields = fields == null;
 
