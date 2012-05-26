@@ -223,7 +223,9 @@ public class MongoDbClient extends DB {
 
             db.requestStart();
 
-				HashMap filter = (HashMap)QueryMongoDbWorkload.filters.get(key);
+				System.out.println("U1");
+				HashMap<String, Object> filter = (HashMap)QueryMongoDbWorkload.filters.get(key);
+				System.out.println("U2");
 
             DBCollection collection = db.getCollection(table);
 //            DBObject q = new BasicDBObject().append("_id", key);				
@@ -234,8 +236,7 @@ public class MongoDbClient extends DB {
             Iterator i = c.iterator();
             while (i.hasNext()) {
 					String k = (String)i.next();
-				   System.out.println("A0 " + k + " " + filter.get(k));
-					q.put(k, filter.get(k));
+					q.put(k, (String)filter.get(k));
             }
 
   //          DBObject q = new BasicDBObject().append(key, value);

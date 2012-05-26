@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 public class QueryMongoDbWorkload extends Workload
 {
 	public static String table;
@@ -47,23 +49,24 @@ public class QueryMongoDbWorkload extends Workload
 	public void init(Properties p) throws WorkloadException
 	{
 		System.out.println("Init MongoDb Queries");
+		filters = new HashMap<String, HashMap>();
 
 		int numqueries = Integer.parseInt(p.getProperty("queries"));
-		for (int i = 0; i < numqueries; i++)
+		for (int i = 1; i <= numqueries; i++)
 		{
-			String p1 = p.getProperty("query" + i);
-			System.out.println("I1 " + p1);
+			String query = p.getProperty("query" + i);
+
+			try
+			{
+				HashMap<String, Object> result = new ObjectMapper().readValue(query, HashMap.class);
+
+				filters.put(String.valueOf(i), result);
+			}
+			catch (IOException e)
+			{
+				System.out.println(e.getMessage());
+			}
 		}
-
-
-		filter = new HashMap<String, String>();
-		filters = new HashMap<String, String>();
-		filter.put("MUNICIPIOS", "24230_ZOTES_DEL_PARAMO");
-		filter.put("GRUPOS_DE_EDAD_OCUPACION_PRINCIPAL", "TODAS_LAS_EDADES");
-
-//		filter.put("MUNICIPIOS", "24002_ALGADEFE");
-
-		filters.put("key1", filter);
 	}
 
 	public boolean doInsert(DB db, Object threadstate)
@@ -83,7 +86,7 @@ public class QueryMongoDbWorkload extends Workload
 		table = "artepxs";
 
 		HashMap results = new HashMap<String, ByteIterator>();
-		db.read(table, "key1", null, results);
+		db.read(table, "1", null, results);
 
 		System.out.println("Res " + results.size());
 		return true;
