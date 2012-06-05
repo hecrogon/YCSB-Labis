@@ -75,7 +75,7 @@ public class QueryMongoDbWorkload extends Workload
 	public static final String MAX_SCAN_LENGTH_PROPERTY_DEFAULT="1000";
 
 	/**
-	 * The name of the property for the scan length distribution. Options are "uniform" and "zipfian" (favoring short scans)
+	 * The name of the property for the scan length distribution. Options are "uniform" and "zipfian" (favoring short scans).
 	 */
 	public static final String SCAN_LENGTH_DISTRIBUTION_PROPERTY="scanlengthdistribution";
 
@@ -84,11 +84,24 @@ public class QueryMongoDbWorkload extends Workload
 	 */
 	public static final String SCAN_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT="uniform";
 
+	/**
+	 * The name of the property for the debug option. Options are "true" and "false".
+	 */
+	public static final String DEBUG_PROPERTY="debug";
+
+	/**
+	 * The default max scan length.
+	 */
+	public static final String DEBUG_PROPERTY_DEFAULT="false";
+
 	DiscreteGenerator operationchooser;
 
 	IntegerGenerator scanlength;
+	
+	boolean debug;
 
 	public static String table;
+	
 	public static HashMap<String, DBObject> filters;
 
 	public void init(Properties p) throws WorkloadException
@@ -101,6 +114,7 @@ public class QueryMongoDbWorkload extends Workload
 		int minscanlength=Integer.parseInt(p.getProperty(MIN_SCAN_LENGTH_PROPERTY,MIN_SCAN_LENGTH_PROPERTY_DEFAULT));
 		int maxscanlength=Integer.parseInt(p.getProperty(MAX_SCAN_LENGTH_PROPERTY,MAX_SCAN_LENGTH_PROPERTY_DEFAULT));
 		String scanlengthdistrib=p.getProperty(SCAN_LENGTH_DISTRIBUTION_PROPERTY,SCAN_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT);
+		debug=Boolean.parseBoolean(p.getProperty(DEBUG_PROPERTY,DEBUG_PROPERTY_DEFAULT));
 
 		String[] queries = p.getProperty("queries").split(";");
 		for (int i = 0; i < queries.length; i++)
@@ -168,11 +182,13 @@ public class QueryMongoDbWorkload extends Workload
 
 		Random random = new Random();
 		int max = filters.size();
-		int randomNum = random.nextInt(max);
+		int queryNum = random.nextInt(max);
 
-		db.read(table, String.valueOf(randomNum), null, results);
+		int resSize = db.read(table, String.valueOf(queryNum), null, results);
 
-		//System.out.println("Read: " + randomNum + ", 1");
+		if (debug)
+			System.out.printf("Read::%s::%d::%d\n", 
+					filters.get(String.valueOf(queryNum)).toString(), queryNum, (1 - resSize));
 	}
 
 	public void doTransactionScan(DB db)
@@ -189,6 +205,9 @@ public class QueryMongoDbWorkload extends Workload
 
 		db.scan(table, String.valueOf(queryNum), len, null, results);
 
-		//System.out.println("Scan: " + queryNum + ", " + results.size());
+
+		if (debug)
+			System.out.printf("Scan::%s::%d::%d::%d\n", 
+					filters.get(String.valueOf(queryNum)).toString(), queryNum, len, results.size());
 	}
 }

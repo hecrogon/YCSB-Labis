@@ -76,9 +76,9 @@ public class MongoDbClient extends DB {
 
 			// need to append db to url.
 			url += "/"+database;
-			System.out.println("new database url = "+url);
+//			System.out.println("new database url = "+url);
 			mongo = new Mongo(new DBAddress(url));
-			System.out.println("mongo connection created with "+url);
+//			System.out.println("mongo connection created with "+url);
 		} catch (Exception e1) {
 			System.err.println(
 					"Could not initialize MongoDB connection pool for Loader: "
@@ -177,7 +177,6 @@ public class MongoDbClient extends DB {
 
 			DBCollection collection = db.getCollection(table);
 
-			//System.out.println("Query: " + query.toString());
 			DBObject fieldsToReturn = new BasicDBObject();
 			boolean returnAllFields = fields == null;
 
@@ -271,8 +270,6 @@ public class MongoDbClient extends DB {
 			HashMap<String, DBObject> query = (HashMap<String, DBObject>)QueryMongoDbWorkload.filters.get(startkey);
 
 			DBCollection collection = db.getCollection(table);
-
-			//System.out.println("Query: " + query.toString());
 
 			DBCursor cursor = collection.find((DBObject)query).limit(recordcount);
 			while (cursor.hasNext()) {
