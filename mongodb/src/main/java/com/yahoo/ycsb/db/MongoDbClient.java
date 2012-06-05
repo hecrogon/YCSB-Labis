@@ -9,17 +9,11 @@
 
 package com.yahoo.ycsb.db;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map;
 import java.util.Vector;
-
-import org.bson.*;
-import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBAddress;
@@ -27,14 +21,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
-import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
 import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.ByteIterator;
-import com.yahoo.ycsb.StringByteIterator;
 import com.yahoo.ycsb.workloads.QueryMongoDbWorkload;
 
 /**
@@ -51,356 +43,256 @@ import com.yahoo.ycsb.workloads.QueryMongoDbWorkload;
  */
 public class MongoDbClient extends DB {
 
-    private Mongo mongo;
-    private WriteConcern writeConcern;
-    private String database;
-    public HashMap filter;
+	private Mongo mongo;
+	private WriteConcern writeConcern;
+	private String database;
 
-    /**
-     * Initialize any state for this DB. Called once per DB instance; there is
-     * one DB instance per client thread.
-     */
-    public void init() throws DBException {
-        // initialize MongoDb driver
-        Properties props = getProperties();
-        String url = props.getProperty("mongodb.url");
-        database = props.getProperty("mongodb.database");
-        String writeConcernType = props.getProperty("mongodb.writeConcern");
+	/**
+	 * Initialize any state for this DB. Called once per DB instance; there is
+	 * one DB instance per client thread.
+	 */
+	public void init() throws DBException {
+		// initialize MongoDb driver
+		Properties props = getProperties();
+		String url = props.getProperty("mongodb.url");
+		database = props.getProperty("mongodb.database");
+		String writeConcernType = props.getProperty("mongodb.writeConcern");
 
-        if ("none".equals(writeConcernType)) {
-            writeConcern = WriteConcern.NONE;
-        } else if ("strict".equals(writeConcernType)) {
-            writeConcern = WriteConcern.SAFE;
-        } else if ("normal".equals(writeConcernType)) {
-            writeConcern = WriteConcern.NORMAL;
-        }
+		if ("none".equals(writeConcernType)) {
+			writeConcern = WriteConcern.NONE;
+		} else if ("strict".equals(writeConcernType)) {
+			writeConcern = WriteConcern.SAFE;
+		} else if ("normal".equals(writeConcernType)) {
+			writeConcern = WriteConcern.NORMAL;
+		}
 
-        try {
-            // strip out prefix since Java driver doesn't currently support
-            // standard connection format URL yet
-            // http://www.mongodb.org/display/DOCS/Connections
-            if (url.startsWith("mongodb://")) {
-                url = url.substring(10);
-            }
+		try {
+			// strip out prefix since Java driver doesn't currently support
+			// standard connection format URL yet
+			// http://www.mongodb.org/display/DOCS/Connections
+			if (url.startsWith("mongodb://")) {
+				url = url.substring(10);
+			}
 
-            // need to append db to url.
-            url += "/"+database;
-            System.out.println("new database url = "+url);
-            mongo = new Mongo(new DBAddress(url));
-            System.out.println("mongo connection created with "+url);
-        } catch (Exception e1) {
-            System.err.println(
-                    "Could not initialize MongoDB connection pool for Loader: "
-                            + e1.toString());
-            e1.printStackTrace();
-            return;
-        }
+			// need to append db to url.
+			url += "/"+database;
+			System.out.println("new database url = "+url);
+			mongo = new Mongo(new DBAddress(url));
+			System.out.println("mongo connection created with "+url);
+		} catch (Exception e1) {
+			System.err.println(
+					"Could not initialize MongoDB connection pool for Loader: "
+							+ e1.toString());
+			e1.printStackTrace();
+			return;
+		}
 
-    }
+	}
 
-    @Override
-    /**
-     * Delete a record from the database.
-     *
-     * @param table The name of the table
-     * @param key The record key of the record to delete.
-     * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
-     */
-    public int delete(String table, String key) {
-        com.mongodb.DB db=null;
-        try {
-            db = mongo.getDB(database);
-            db.requestStart();
-            DBCollection collection = db.getCollection(table);
-            DBObject q = new BasicDBObject().append("_id", key);
-            WriteResult res = collection.remove(q, writeConcern);
-            return res.getN() == 1 ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        }
-        finally
-        {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
+	@Override
+	/**
+	 * Delete a record from the database.
+	 *
+	 * @param table The name of the table
+	 * @param key The record key of the record to delete.
+	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
+	 */
+	public int delete(String table, String key) {
+		com.mongodb.DB db=null;
+		try {
+			db = mongo.getDB(database);
+			db.requestStart();
+			DBCollection collection = db.getCollection(table);
+			DBObject q = new BasicDBObject().append("_id", key);
+			WriteResult res = collection.remove(q, writeConcern);
+			return res.getN() == 1 ? 0 : 1;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			return 1;
+		}
+		finally
+		{
+			if (db!=null)
+			{
+				db.requestDone();
+			}
+		}
+	}
 
-    @Override
-    /**
-     * Insert a record in the database. Any field/value pairs in the specified values HashMap will be written into the record with the specified
-     * record key.
-     *
-     * @param table The name of the table
-     * @param key The record key of the record to insert.
-     * @param values A HashMap of field/value pairs to insert in the record
-     * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
-     */
-    public int insert(String table, String key, HashMap<String, ByteIterator> values) {
-        com.mongodb.DB db = null;
-        try {
-            db = mongo.getDB(database);
+	@Override
+	/**
+	 * Insert a record in the database. Any field/value pairs in the specified values HashMap will be written into the record with the specified
+	 * record key.
+	 *
+	 * @param table The name of the table
+	 * @param key The record key of the record to insert.
+	 * @param values A HashMap of field/value pairs to insert in the record
+	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
+	 */
+	public int insert(String table, String key, HashMap<String, ByteIterator> values) {
+		com.mongodb.DB db = null;
+		try {
+			db = mongo.getDB(database);
 
-            db.requestStart();
+			db.requestStart();
 
-            DBCollection collection = db.getCollection(table);
-            DBObject r = new BasicDBObject().append("_id", key);
-	    for(String k: values.keySet()) {
-		r.put(k, values.get(k).toArray());
-	    }
-            WriteResult res = collection.insert(r,writeConcern);
-            return res.getError() == null ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        } finally {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
+			DBCollection collection = db.getCollection(table);
+			DBObject r = new BasicDBObject().append("_id", key);
+			for(String k: values.keySet()) {
+				r.put(k, values.get(k).toArray());
+			}
+			WriteResult res = collection.insert(r,writeConcern);
+			return res.getError() == null ? 0 : 1;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			return 1;
+		} finally {
+			if (db!=null)
+			{
+				db.requestDone();
+			}
+		}
+	}
 
-    @Override
-    @SuppressWarnings("unchecked")
-    /**
-     * Read a record from the database. Each field/value pair from the result will be stored in a HashMap.
-     *
-     * @param table The name of the table
-     * @param key The record key of the record to read.
-     * @param fields The list of fields to read, or null for all of them
-     * @param result A HashMap of field/value pairs for the result
-     * @return Zero on success, a non-zero error code on error or "not found".
-     */
-/*
-    public int read(String table, String key, Set<String> fields,
-            HashMap<String, ByteIterator> result) {
-        com.mongodb.DB db = null;
-        try {
-            db = mongo.getDB(database);
+	@Override
+	@SuppressWarnings("unchecked")
+	/**
+	 * Read a record from the database. Each field/value pair from the result will be stored in a HashMap.
+	 *
+	 * @param table The name of the table
+	 * @param key The record key of the record to read.
+	 * @param fields The list of fields to read, or null for all of them
+	 * @param result A HashMap of field/value pairs for the result
+	 * @return Zero on success, a non-zero error code on error or "not found".
+	 */
+	public int read(String table, String key, Set<String> fields,
+			HashMap<String, ByteIterator> result) {
+		com.mongodb.DB db = null;
+		try {
+			db = mongo.getDB(database);
 
-            db.requestStart();
+			db.requestStart();
 
-            DBCollection collection = db.getCollection(table);
-            DBObject q = new BasicDBObject().append("_id", key);
-            DBObject fieldsToReturn = new BasicDBObject();
-            boolean returnAllFields = fields == null;
+			HashMap<String, DBObject> query = (HashMap<String, DBObject>)QueryMongoDbWorkload.filters.get(key);
 
-            DBObject queryResult = null;
-            if (!returnAllFields) {
-                Iterator<String> iter = fields.iterator();
-                while (iter.hasNext()) {
-                    fieldsToReturn.put(iter.next(), 1);
-                }
-                queryResult = collection.findOne(q, fieldsToReturn);
-            } else {
-                queryResult = collection.findOne(q);
-            }
+			DBCollection collection = db.getCollection(table);
 
-            if (queryResult != null) {
-                result.putAll(queryResult.toMap());
-            }
-            return queryResult != null ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        } finally {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
-*/
+			//System.out.println("Query: " + query.toString());
+			DBObject fieldsToReturn = new BasicDBObject();
+			boolean returnAllFields = fields == null;
 
-    public int read(String table, String key, Set<String> fields,
-            HashMap<String, ByteIterator> result) {
-        com.mongodb.DB db = null;
-        try {
-            db = mongo.getDB(database);
+			DBObject queryResult = null;
+			if (!returnAllFields) {
+				Iterator<String> iter = fields.iterator();
+				while (iter.hasNext()) {
+					fieldsToReturn.put(iter.next(), 1);
+				}
+				queryResult = collection.findOne((DBObject)query, fieldsToReturn);
+			} else {
+				queryResult = collection.findOne((DBObject)query);
+			}
 
-            db.requestStart();
-
-				HashMap<String, Object> filter = (HashMap)QueryMongoDbWorkload.filters.get(key);
-
-            DBCollection collection = db.getCollection(table);
-//            DBObject q = new BasicDBObject().append("_id", key);				
-
-            DBObject q = new BasicDBObject();
-
-				Collection c = filter.keySet();
-            Iterator i = c.iterator();
-            while (i.hasNext()) {
-					String k = (String)i.next();
-					q.put(k, (String)filter.get(k));
-            }
-
-  //          DBObject q = new BasicDBObject().append(key, value);
-				System.out.println("Query: " + q.toString());
-            DBObject fieldsToReturn = new BasicDBObject();
-            boolean returnAllFields = fields == null;
-
-            DBObject queryResult = null;
-            if (!returnAllFields) {
-                Iterator<String> iter = fields.iterator();
-                while (iter.hasNext()) {
-                    fieldsToReturn.put(iter.next(), 1);
-                }
-                queryResult = collection.findOne(q, fieldsToReturn);
-            } else {
-                queryResult = collection.findOne(q);
-            }
-
-            if (queryResult != null) {
-                result.putAll(queryResult.toMap());
-            }
-            return queryResult != null ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        } finally {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
+			if (queryResult != null) {
+				result.putAll(queryResult.toMap());
+			}
+			return queryResult != null ? 0 : 1;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			return 1;
+		} finally {
+			if (db!=null)
+			{
+				db.requestDone();
+			}
+		}
+	}
 
 
-/*
-    public int read(String table, HashMap<String, String> filters, Set<String> fields,
-            HashMap<String, ByteIterator> result) {
-        com.mongodb.DB db = null;
-        try {
-            db = mongo.getDB(database);
+	@Override
+	/**
+	 * Update a record in the database. Any field/value pairs in the specified values HashMap will be written into the record with the specified
+	 * record key, overwriting any existing values with the same field name.
+	 *
+	 * @param table The name of the table
+	 * @param key The record key of the record to write.
+	 * @param values A HashMap of field/value pairs to update in the record
+	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
+	 */
+	public int update(String table, String key, HashMap<String, ByteIterator> values) {
+		com.mongodb.DB db = null;
+		try {
+			db = mongo.getDB(database);
 
-            db.requestStart();
+			db.requestStart();
 
-            DBCollection collection = db.getCollection(table);
-//            DBObject q = new BasicDBObject().append("MUNICIPIOS", key);
-            DBObject q = new BasicDBObject();
+			DBCollection collection = db.getCollection(table);
+			DBObject q = new BasicDBObject().append("_id", key);
+			DBObject u = new BasicDBObject();
+			DBObject fieldsToSet = new BasicDBObject();
+			Iterator<String> keys = values.keySet().iterator();
+			while (keys.hasNext()) {
+				String tmpKey = keys.next();
+				fieldsToSet.put(tmpKey, values.get(tmpKey).toArray());
+			}
+			u.put("$set", fieldsToSet);
+			WriteResult res = collection.update(q, u, false, false,
+					writeConcern);
+			return res.getN() == 1 ? 0 : 1;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			return 1;
+		} finally {
+			if (db!=null)
+			{
+				db.requestDone();
+			}
+		}
+	}
 
-				Collection c = filters.keySet();
-            Iterator i = c.iterator();
-            while (i.hasNext()) {
-					q.put((String)i.next(), filters.get(i.next()));
-            }
+	@Override
+	@SuppressWarnings("unchecked")
+	/**
+	 * Perform a range scan for a set of records in the database. Each field/value pair from the result will be stored in a HashMap.
+	 *
+	 * @param table The name of the table
+	 * @param startkey The record key of the first record to read.
+	 * @param recordcount The number of records to read
+	 * @param fields The list of fields to read, or null for all of them
+	 * @param result A Vector of HashMaps, where each HashMap is a set field/value pairs for one record
+	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
+	 */
+	public int scan(String table, String startkey, int recordcount,
+			Set<String> fields, Vector<HashMap<String, ByteIterator>> result) {
+		com.mongodb.DB db=null;
+		try {
+			db = mongo.getDB(database);
+			db.requestStart();
 
-            DBObject fieldsToReturn = new BasicDBObject();
-            boolean returnAllFields = fields == null;
+			HashMap<String, DBObject> query = (HashMap<String, DBObject>)QueryMongoDbWorkload.filters.get(startkey);
 
-            DBObject queryResult = null;
-            if (!returnAllFields) {
-                Iterator<String> iter = fields.iterator();
-                while (iter.hasNext()) {
-                    fieldsToReturn.put(iter.next(), 1);
-                }
-                queryResult = collection.findOne(q, fieldsToReturn);
-            } else {
-                queryResult = collection.findOne(q);
-            }
+			DBCollection collection = db.getCollection(table);
 
-            if (queryResult != null) {
-                result.putAll(queryResult.toMap());
-            }
-            return queryResult != null ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        } finally {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
-*/
+			//System.out.println("Query: " + query.toString());
 
-    @Override
-    /**
-     * Update a record in the database. Any field/value pairs in the specified values HashMap will be written into the record with the specified
-     * record key, overwriting any existing values with the same field name.
-     *
-     * @param table The name of the table
-     * @param key The record key of the record to write.
-     * @param values A HashMap of field/value pairs to update in the record
-     * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
-     */
-    public int update(String table, String key, HashMap<String, ByteIterator> values) {
-        com.mongodb.DB db = null;
-        try {
-            db = mongo.getDB(database);
+			DBCursor cursor = collection.find((DBObject)query).limit(recordcount);
+			while (cursor.hasNext()) {
+				//toMap() returns a Map, but result.add() expects a Map<String,String>. Hence, the suppress warnings.
+				result.add((HashMap<String, ByteIterator>) cursor.next().toMap());
+			}
 
-            db.requestStart();
+			return 0;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			return 1;
+		}
+		finally
+		{
+			if (db!=null)
+			{
+				db.requestDone();
+			}
+		}
 
-            DBCollection collection = db.getCollection(table);
-            DBObject q = new BasicDBObject().append("_id", key);
-            DBObject u = new BasicDBObject();
-            DBObject fieldsToSet = new BasicDBObject();
-            Iterator<String> keys = values.keySet().iterator();
-            while (keys.hasNext()) {
-                String tmpKey = keys.next();
-                fieldsToSet.put(tmpKey, values.get(tmpKey).toArray());
-
-            }
-            u.put("$set", fieldsToSet);
-            WriteResult res = collection.update(q, u, false, false,
-                    writeConcern);
-            return res.getN() == 1 ? 0 : 1;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        } finally {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    /**
-     * Perform a range scan for a set of records in the database. Each field/value pair from the result will be stored in a HashMap.
-     *
-     * @param table The name of the table
-     * @param startkey The record key of the first record to read.
-     * @param recordcount The number of records to read
-     * @param fields The list of fields to read, or null for all of them
-     * @param result A Vector of HashMaps, where each HashMap is a set field/value pairs for one record
-     * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
-     */
-    public int scan(String table, String startkey, int recordcount,
-            Set<String> fields, Vector<HashMap<String, ByteIterator>> result) {
-        com.mongodb.DB db=null;
-        try {
-            db = mongo.getDB(database);
-            db.requestStart();
-            DBCollection collection = db.getCollection(table);
-            // { "_id":{"$gte":startKey, "$lte":{"appId":key+"\uFFFF"}} }
-            DBObject scanRange = new BasicDBObject().append("$gte", startkey);
-            DBObject q = new BasicDBObject().append("_id", scanRange);
-            DBCursor cursor = collection.find(q).limit(recordcount);
-            while (cursor.hasNext()) {
-                //toMap() returns a Map, but result.add() expects a Map<String,String>. Hence, the suppress warnings.
-                result.add(StringByteIterator.getByteIteratorMap((Map<String,String>)cursor.next().toMap()));
-            }
-
-            return 0;
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return 1;
-        }
-        finally
-        {
-            if (db!=null)
-            {
-                db.requestDone();
-            }
-        }
-
-    }
+	}
 }
 

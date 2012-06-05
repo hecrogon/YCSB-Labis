@@ -19,55 +19,117 @@ package com.yahoo.ycsb.workloads;
 
 import java.util.Properties;
 import com.yahoo.ycsb.*;
-import com.yahoo.ycsb.generator.CounterGenerator;
 import com.yahoo.ycsb.generator.DiscreteGenerator;
-import com.yahoo.ycsb.generator.ExponentialGenerator;
-import com.yahoo.ycsb.generator.Generator;
-import com.yahoo.ycsb.generator.ConstantIntegerGenerator;
-import com.yahoo.ycsb.generator.HotspotIntegerGenerator;
-import com.yahoo.ycsb.generator.HistogramGenerator;
 import com.yahoo.ycsb.generator.IntegerGenerator;
-import com.yahoo.ycsb.generator.ScrambledZipfianGenerator;
-import com.yahoo.ycsb.generator.SkewedLatestGenerator;
 import com.yahoo.ycsb.generator.UniformIntegerGenerator;
 import com.yahoo.ycsb.generator.ZipfianGenerator;
-import com.yahoo.ycsb.measurements.Measurements;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Vector;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 public class QueryMongoDbWorkload extends Workload
 {
-	public static int numqueries;
+	/**
+	 * The name of the property for the proportion of transactions that are reads.
+	 */
+	public static final String READ_PROPORTION_PROPERTY="readproportion";
+
+	/**
+	 * The default proportion of transactions that are reads.	
+	 */
+	public static final String READ_PROPORTION_PROPERTY_DEFAULT="0.95";
+
+	/**
+	 * The name of the property for the proportion of transactions that are scans.
+	 */
+	public static final String SCAN_PROPORTION_PROPERTY="scanproportion";
+
+	/**
+	 * The default proportion of transactions that are scans.
+	 */
+	public static final String SCAN_PROPORTION_PROPERTY_DEFAULT="0.0";
+
+	/**
+	 * The name of the property for the min scan length (number of records)
+	 */
+	public static final String MIN_SCAN_LENGTH_PROPERTY="minscanlength";
+
+	/**
+	 * The default min scan length.
+	 */
+	public static final String MIN_SCAN_LENGTH_PROPERTY_DEFAULT="1";
+
+	/**
+	 * The name of the property for the max scan length (number of records)
+	 */
+	public static final String MAX_SCAN_LENGTH_PROPERTY="maxscanlength";
+
+	/**
+	 * The default max scan length.
+	 */
+	public static final String MAX_SCAN_LENGTH_PROPERTY_DEFAULT="1000";
+
+	/**
+	 * The name of the property for the scan length distribution. Options are "uniform" and "zipfian" (favoring short scans)
+	 */
+	public static final String SCAN_LENGTH_DISTRIBUTION_PROPERTY="scanlengthdistribution";
+
+	/**
+	 * The default max scan length.
+	 */
+	public static final String SCAN_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT="uniform";
+
+	DiscreteGenerator operationchooser;
+
+	IntegerGenerator scanlength;
+
 	public static String table;
-	public static HashMap filter;
-	public static HashMap filters;
+	public static HashMap<String, DBObject> filters;
 
 	public void init(Properties p) throws WorkloadException
 	{
 		System.out.println("Init MongoDb Queries");
-		filters = new HashMap<String, HashMap>();
+		filters = new HashMap<String, DBObject>();
 
-		numqueries = Integer.parseInt(p.getProperty("queries"));
-		for (int i = 1; i <= numqueries; i++)
+		double readproportion=Double.parseDouble(p.getProperty(READ_PROPORTION_PROPERTY,READ_PROPORTION_PROPERTY_DEFAULT));
+		double scanproportion=Double.parseDouble(p.getProperty(SCAN_PROPORTION_PROPERTY,SCAN_PROPORTION_PROPERTY_DEFAULT));
+		int minscanlength=Integer.parseInt(p.getProperty(MIN_SCAN_LENGTH_PROPERTY,MIN_SCAN_LENGTH_PROPERTY_DEFAULT));
+		int maxscanlength=Integer.parseInt(p.getProperty(MAX_SCAN_LENGTH_PROPERTY,MAX_SCAN_LENGTH_PROPERTY_DEFAULT));
+		String scanlengthdistrib=p.getProperty(SCAN_LENGTH_DISTRIBUTION_PROPERTY,SCAN_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT);
+
+		String[] queries = p.getProperty("queries").split(";");
+		for (int i = 0; i < queries.length; i++)
 		{
-			String query = p.getProperty("query" + i);
+			filters.put(String.valueOf(i), (BasicDBObject)JSON.parse(queries[i]));
+		}
 
-			try
-			{
-				HashMap<String, Object> result = new ObjectMapper().readValue(query, HashMap.class);
+		operationchooser=new DiscreteGenerator();
+		if (readproportion>0)
+		{
+			operationchooser.addValue(readproportion,"READ");
+		}
 
-				filters.put(String.valueOf(i), result);
-			}
-			catch (IOException e)
-			{
-				System.out.println(e.getMessage());
-			}
+		if (scanproportion>0)
+		{
+			operationchooser.addValue(scanproportion,"SCAN");
+		}
+
+		if (scanlengthdistrib.compareTo("uniform")==0)
+		{
+			scanlength=new UniformIntegerGenerator(minscanlength,maxscanlength);
+		}
+		else if (scanlengthdistrib.compareTo("zipfian")==0)
+		{
+			scanlength=new ZipfianGenerator(minscanlength,maxscanlength);
+		}
+		else
+		{
+			throw new WorkloadException("Distribution \""+scanlengthdistrib+"\" not allowed for scan length");
 		}
 	}
 
@@ -84,19 +146,49 @@ public class QueryMongoDbWorkload extends Workload
 	 */
 	public boolean doTransaction(DB db, Object threadstate)
 	{
-		System.out.println("Transaction " + table);
+		String op=operationchooser.nextString();
+
+		if (op.compareTo("READ")==0)
+		{
+			doTransactionRead(db);
+		}
+		else if (op.compareTo("SCAN")==0)
+		{
+			doTransactionScan(db);
+		}
+
+		return true;
+	}
+
+	public void doTransactionRead(DB db)
+	{
 		table = "artepxs";
 
-		HashMap results = new HashMap<String, ByteIterator>();
+		HashMap<String, ByteIterator> results = new HashMap<String, ByteIterator>();
 
-      Random random = new Random();
-      int min = 1;
-		int max = numqueries;
-		int randomNum = random.nextInt(max - min + 1) + min;
+		Random random = new Random();
+		int max = filters.size();
+		int randomNum = random.nextInt(max);
 
 		db.read(table, String.valueOf(randomNum), null, results);
 
-		System.out.println("Res " + randomNum + " " + results.size());
-		return true;
+		//System.out.println("Read: " + randomNum + ", 1");
+	}
+
+	public void doTransactionScan(DB db)
+	{
+		table = "artepxs";
+
+		Vector<HashMap<String, ByteIterator>> results = new Vector<HashMap<String, ByteIterator>>();
+
+		Random random = new Random();
+		int max = filters.size();
+		int queryNum = random.nextInt(max);
+
+		int len=scanlength.nextInt();
+
+		db.scan(table, String.valueOf(queryNum), len, null, results);
+
+		//System.out.println("Scan: " + queryNum + ", " + results.size());
 	}
 }
