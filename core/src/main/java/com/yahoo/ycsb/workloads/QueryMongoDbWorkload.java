@@ -17,6 +17,7 @@
 
 package com.yahoo.ycsb.workloads;
 
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import com.yahoo.ycsb.*;
 import com.yahoo.ycsb.generator.DiscreteGenerator;
@@ -24,6 +25,8 @@ import com.yahoo.ycsb.generator.IntegerGenerator;
 import com.yahoo.ycsb.generator.UniformIntegerGenerator;
 import com.yahoo.ycsb.generator.ZipfianGenerator;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
@@ -104,6 +107,12 @@ public class QueryMongoDbWorkload extends Workload
 	
 	public static HashMap<String, DBObject> filters;
 
+	private void printDateTime(String label) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date datetime = Calendar.getInstance().getTime();
+		System.out.println(label + format.format(datetime));
+	}
+	
 	public void init(Properties p) throws WorkloadException
 	{
 		System.out.println("Init MongoDb Queries");
@@ -145,19 +154,20 @@ public class QueryMongoDbWorkload extends Workload
 		{
 			throw new WorkloadException("Distribution \""+scanlengthdistrib+"\" not allowed for scan length");
 		}
+		
+		printDateTime("Start: ");
 	}
+    
+    public void cleanup() throws WorkloadException
+    {
+		printDateTime("End: ");
+    }
 
 	public boolean doInsert(DB db, Object threadstate)
 	{
 		return true;
 	}
 
-	/**
-	 * Do one transaction operation. Because it will be called concurrently from multiple client threads, this 
-	 * function must be thread safe. However, avoid synchronized, or the threads will block waiting for each 
-	 * other, and it will be difficult to reach the target throughput. Ideally, this function would have no side
-	 * effects other than DB operations.
-	 */
 	public boolean doTransaction(DB db, Object threadstate)
 	{
 		String op=operationchooser.nextString();
