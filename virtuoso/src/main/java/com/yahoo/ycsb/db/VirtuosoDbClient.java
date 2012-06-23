@@ -112,22 +112,30 @@ public class VirtuosoDbClient extends DB
 	public int read(String table, String key, Set<String> fields,
 			HashMap<String, ByteIterator> result) {
 
-		Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
-
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
-
-		ResultSet results = vqe.execSelect();
-      while (results.hasNext())
+		try
 		{
-			QuerySolution res = results.nextSolution();
-			RDFNode graph = res.get("graph");
-			RDFNode s = res.get("s");
-			RDFNode p = res.get("p");
-			RDFNode o = res.get("o");
-			System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
-		}
+			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
 
-		return 0;
+			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
+
+			ResultSet queryResult = vqe.execSelect();
+			while (queryResult.hasNext())
+			{
+				QuerySolution res = queryResult.nextSolution();
+				RDFNode graph = res.get("graph");
+				RDFNode s = res.get("s");
+				RDFNode p = res.get("p");
+				RDFNode o = res.get("o");
+				System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
+			}
+
+			return queryResult != null ? 0 : 1;
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.toString());
+			return 1;
+		}
 /*
 		com.mongodb.DB db = null;
 		try {
