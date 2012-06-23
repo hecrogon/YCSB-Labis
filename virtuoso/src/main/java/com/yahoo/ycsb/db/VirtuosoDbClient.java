@@ -37,62 +37,37 @@ import com.yahoo.ycsb.ByteIterator;
  * @author ypai
  *
  */
-public class VirtuosoDbClient extends DB {
-
-//	private Virtuoso virtuoso;
-//	private WriteConcern writeConcern;
-//	private URLConnection urlConn;
+public class VirtuosoDbClient extends DB
+{
+	private VirtGraph virtGraph;
 	private String database;
+	private String user;
+	private String password;
 
 	/**
 	 * Initialize any state for this DB. Called once per DB instance; there is
 	 * one DB instance per client thread.
 	 */
-	public void init() throws DBException {
+	public void init() throws DBException
+	{
 		Properties props = getProperties();
 		String url = props.getProperty("virtuoso.url");
 		database = props.getProperty("virtuoso.database");
+		user = props.getProperty("virtuoso.user");
+		password = props.getProperty("virtuoso.password");
 
-/*
-		// initialize MongoDb driver
-		Properties props = getProperties();
-		String url = props.getProperty("virtuoso.url");
-		database = props.getProperty("virtuoso.database");
-		String writeConcernType = props.getProperty("virtuoso.writeConcern");
+		try
+		{
+//			virtGraph = new VirtGraph("jdbc:virtuoso://localhost:1111", "dba", "dba");
+			virtGraph = new VirtGraph(url, user, password);
 
-		if ("none".equals(writeConcernType)) {
-			writeConcern = WriteConcern.NONE;
-		} else if ("strict".equals(writeConcernType)) {
-			writeConcern = WriteConcern.SAFE;
-		} else if ("normal".equals(writeConcernType)) {
-			writeConcern = WriteConcern.NORMAL;
+			System.out.println("Virtuoso connection created with " + url);
 		}
-
-		try {
-			// strip out prefix since Java driver doesn't currently support
-			// standard connection format URL yet
-			// http://www.mongodb.org/display/DOCS/Connections
-			if (url.startsWith("virtuoso://")) {
-				url = url.substring(10);
-			}
-
-			// need to append db to url.
-			url += "/"+database;
-//			System.out.println("new database url = "+url);
-
-
-//			mongo = new Mongo(new DBAddress(url));
-
-
-//			System.out.println("mongo connection created with "+url);
-		} catch (Exception e1) {
-			System.err.println(
-					"Could not initialize VirtuosoDB connection pool for Loader: "
-							+ e1.toString());
+		catch (Exception e1)
+		{
+			System.err.println("Could not initialize VirtuosoDB connection pool for Loader: " + e1.toString());
 			e1.printStackTrace();
-			return;
 		}
-*/
 	}
 
 	@Override
@@ -103,29 +78,9 @@ public class VirtuosoDbClient extends DB {
 	 * @param key The record key of the record to delete.
 	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
 	 */
-	public int delete(String table, String key) {
-/*
-		com.mongodb.DB db=null;
-		try {
-			db = mongo.getDB(database);
-			db.requestStart();
-			DBCollection collection = db.getCollection(table);
-			DBObject q = new BasicDBObject().append("_id", key);
-			WriteResult res = collection.remove(q, writeConcern);
-			return res.getN() == 1 ? 0 : 1;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return 1;
-		}
-		finally
-		{
-			if (db!=null)
-			{
-				db.requestDone();
-			}
-		}
-*/
-return 0;
+	public int delete(String table, String key)
+	{
+		return 0;
 	}
 
 	@Override
@@ -138,32 +93,9 @@ return 0;
 	 * @param values A HashMap of field/value pairs to insert in the record
 	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
 	 */
-	public int insert(String table, String key, HashMap<String, ByteIterator> values) {
-/*
-		com.mongodb.DB db = null;
-		try {
-			db = mongo.getDB(database);
-
-			db.requestStart();
-
-			DBCollection collection = db.getCollection(table);
-			DBObject r = new BasicDBObject().append("_id", key);
-			for(String k: values.keySet()) {
-				r.put(k, values.get(k).toArray());
-			}
-			WriteResult res = collection.insert(r,writeConcern);
-			return res.getError() == null ? 0 : 1;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return 1;
-		} finally {
-			if (db!=null)
-			{
-				db.requestDone();
-			}
-		}
-*/
-return 0;
+	public int insert(String table, String key, HashMap<String, ByteIterator> values)
+	{
+		return 0;
 	}
 
 	@Override
@@ -179,6 +111,23 @@ return 0;
 	 */
 	public int read(String table, String key, Set<String> fields,
 			HashMap<String, ByteIterator> result) {
+
+		Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
+
+		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
+
+		ResultSet results = vqe.execSelect();
+      while (results.hasNext())
+		{
+			QuerySolution res = results.nextSolution();
+			RDFNode graph = res.get("graph");
+			RDFNode s = res.get("s");
+			RDFNode p = res.get("p");
+			RDFNode o = res.get("o");
+			System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
+		}
+
+		return 0;
 /*
 		com.mongodb.DB db = null;
 		try {
@@ -218,7 +167,6 @@ return 0;
 			}
 		}
 */
-return 0;
 	}
 
 
@@ -232,38 +180,9 @@ return 0;
 	 * @param values A HashMap of field/value pairs to update in the record
 	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
 	 */
-	public int update(String table, String key, HashMap<String, ByteIterator> values) {
-/*
-		com.mongodb.DB db = null;
-		try {
-			db = mongo.getDB(database);
-
-			db.requestStart();
-
-			DBCollection collection = db.getCollection(table);
-			DBObject q = new BasicDBObject().append("_id", key);
-			DBObject u = new BasicDBObject();
-			DBObject fieldsToSet = new BasicDBObject();
-			Iterator<String> keys = values.keySet().iterator();
-			while (keys.hasNext()) {
-				String tmpKey = keys.next();
-				fieldsToSet.put(tmpKey, values.get(tmpKey).toArray());
-			}
-			u.put("$set", fieldsToSet);
-			WriteResult res = collection.update(q, u, false, false,
-					writeConcern);
-			return res.getN() == 1 ? 0 : 1;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return 1;
-		} finally {
-			if (db!=null)
-			{
-				db.requestDone();
-			}
-		}
-*/
-return 0;
+	public int update(String table, String key, HashMap<String, ByteIterator> values)
+	{
+		return 0;
 	}
 
 	@Override
@@ -278,8 +197,24 @@ return 0;
 	 * @param result A Vector of HashMaps, where each HashMap is a set field/value pairs for one record
 	 * @return Zero on success, a non-zero error code on error. See this class's description for a discussion of error codes.
 	 */
-	public int scan(String table, String startkey, int recordcount,
-			Set<String> fields, Vector<HashMap<String, ByteIterator>> result) {
+	public int scan(String table, String startkey, int recordcount, Set<String> fields, Vector<HashMap<String, ByteIterator>> result)
+	{
+		Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
+
+		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
+
+		ResultSet results = vqe.execSelect();
+      while (results.hasNext())
+		{
+			QuerySolution res = results.nextSolution();
+			RDFNode graph = res.get("graph");
+			RDFNode s = res.get("s");
+			RDFNode p = res.get("p");
+			RDFNode o = res.get("o");
+			System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
+		}
+
+		return 0;
 /*
 		com.mongodb.DB db=null;
 		try {
@@ -309,7 +244,6 @@ return 0;
 			}
 		}
 */
-return 0;
 	}
 }
 
