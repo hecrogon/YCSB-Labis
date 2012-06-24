@@ -101,8 +101,7 @@ public class QueryVirtuosoWorkload extends Workload
 
 	public static String table;
 	
-	public static HashMap filters;
-//	public static HashMap<String, String> filters;
+	public static HashMap<String, String> filters;
 
 	private void printDateTime(String label)
 	{
@@ -114,8 +113,7 @@ public class QueryVirtuosoWorkload extends Workload
 	public void init(Properties p) throws WorkloadException
 	{
 		System.out.println("Init Virtuoso Queries");
-		filters = new HashMap();
-//		filters = new HashMap<String, String>();
+		filters = new HashMap<String, String>();
 
 		double readproportion=Double.parseDouble(p.getProperty(READ_PROPORTION_PROPERTY,READ_PROPORTION_PROPERTY_DEFAULT));
 		double scanproportion=Double.parseDouble(p.getProperty(SCAN_PROPORTION_PROPERTY,SCAN_PROPORTION_PROPERTY_DEFAULT));
@@ -125,12 +123,10 @@ public class QueryVirtuosoWorkload extends Workload
 		debug=Boolean.parseBoolean(p.getProperty(DEBUG_PROPERTY,DEBUG_PROPERTY_DEFAULT));
 
 		String[] queries = p.getProperty("queries").split(";");
-/*
 		for (int i = 0; i < queries.length; i++)
 		{
-			filters.put(String.valueOf(i), (BasicDBObject)JSON.parse(queries[i]));
+			filters.put(String.valueOf(i), queries[i]);
 		}
-*/
 
 		operationchooser=new DiscreteGenerator();
 		if (readproportion>0)

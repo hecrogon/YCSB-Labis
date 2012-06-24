@@ -57,14 +57,10 @@ public class VirtuosoClient extends DB
 		user = props.getProperty("virtuoso.user");
 		password = props.getProperty("virtuoso.password");
 
-		System.out.println("Y1 " + url);
-		System.out.println("Y2 " + database);
-		System.out.println("Y3 " + user);
-		System.out.println("Y4 " + password);
 		try
 		{
 //			virtGraph = new VirtGraph("jdbc:virtuoso://localhost:1111", "dba", "dba");
-			virtGraph = new VirtGraph(url, user, password);
+//			virtGraph = new VirtGraph(url, user, password);
 
 			System.out.println("Virtuoso connection created with " + url);
 		}
@@ -118,23 +114,13 @@ public class VirtuosoClient extends DB
 	{
 		try
 		{
-			HashMap<String, String> query = (HashMap<String, String>)QueryVirtuosoWorkload.filters.get(key);
+			String query = (String)QueryVirtuosoWorkload.filters.get(key);
 
-//			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
-			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
+			Query sparql = QueryFactory.create("SELECT * WHERE " + query + " limit 1");
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 
 			ResultSet queryResult = vqe.execSelect();
-			while (queryResult.hasNext())
-			{
-				QuerySolution res = queryResult.nextSolution();
-				RDFNode graph = res.get("graph");
-				RDFNode s = res.get("s");
-				RDFNode p = res.get("p");
-				RDFNode o = res.get("o");
-				System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
-			}
 
 			return queryResult != null ? 0 : 1;
 		}
@@ -143,45 +129,6 @@ public class VirtuosoClient extends DB
 			System.err.println(e.toString());
 			return 1;
 		}
-/*
-		com.mongodb.DB db = null;
-		try {
-			db = mongo.getDB(database);
-
-			db.requestStart();
-
-			HashMap<String, DBObject> query = (HashMap<String, DBObject>)QueryMongoDbWorkload.filters.get(key);
-
-			DBCollection collection = db.getCollection(table);
-
-			DBObject fieldsToReturn = new BasicDBObject();
-			boolean returnAllFields = fields == null;
-
-			DBObject queryResult = null;
-			if (!returnAllFields) {
-				Iterator<String> iter = fields.iterator();
-				while (iter.hasNext()) {
-					fieldsToReturn.put(iter.next(), 1);
-				}
-				queryResult = collection.findOne((DBObject)query, fieldsToReturn);
-			} else {
-				queryResult = collection.findOne((DBObject)query);
-			}
-
-			if (queryResult != null) {
-				result.putAll(queryResult.toMap());
-			}
-			return queryResult != null ? 0 : 1;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return 1;
-		} finally {
-			if (db!=null)
-			{
-				db.requestDone();
-			}
-		}
-*/
 	}
 
 
@@ -216,20 +163,13 @@ public class VirtuosoClient extends DB
 	{
 		try
 		{
-			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
+			String query = (String)QueryVirtuosoWorkload.filters.get(startkey);
+
+			Query sparql = QueryFactory.create("SELECT * WHERE " + query);
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 
 			ResultSet queryResult = vqe.execSelect();
-			while (queryResult.hasNext())
-			{
-				QuerySolution res = queryResult.nextSolution();
-				RDFNode graph = res.get("graph");
-				RDFNode s = res.get("s");
-				RDFNode p = res.get("p");
-				RDFNode o = res.get("o");
-				System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
-			}
 
 			return queryResult != null ? 0 : 1;
 		}
@@ -238,36 +178,6 @@ public class VirtuosoClient extends DB
 			System.err.println(e.toString());
 			return 1;
 		}
-
-/*
-		com.mongodb.DB db=null;
-		try {
-			db = mongo.getDB(database);
-			db.requestStart();
-
-			HashMap<String, DBObject> query = (HashMap<String, DBObject>)QueryMongoDbWorkload.filters.get(startkey);
-
-			DBCollection collection = db.getCollection(table);
-
-			DBCursor cursor = collection.find((DBObject)query).limit(recordcount);
-			while (cursor.hasNext()) {
-				//toMap() returns a Map, but result.add() expects a Map<String,String>. Hence, the suppress warnings.
-				result.add((HashMap<String, ByteIterator>) cursor.next().toMap());
-			}
-
-			return 0;
-		} catch (Exception e) {
-			System.err.println(e.toString());
-			return 1;
-		}
-		finally
-		{
-			if (db!=null)
-			{
-				db.requestDone();
-			}
-		}
-*/
 	}
 }
 
