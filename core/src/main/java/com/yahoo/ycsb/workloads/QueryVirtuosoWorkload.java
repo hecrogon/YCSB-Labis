@@ -216,7 +216,6 @@ public class QueryVirtuosoWorkload extends Workload
 
 		db.scan(table, String.valueOf(queryNum), len, null, results);
 
-
 		if (debug)
 			System.out.printf("Scan::%s::%d::%d::%d\n", 
 					filters.get(String.valueOf(queryNum)).toString(), queryNum, len, results.size());
