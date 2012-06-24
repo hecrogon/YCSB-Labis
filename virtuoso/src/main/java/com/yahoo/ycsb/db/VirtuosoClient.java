@@ -30,14 +30,15 @@ import com.yahoo.ycsb.workloads.QueryVirtuosoWorkload;
  *
  * Properties to set:
  *
- * virtuoso.url=virtuoso://localhost:27017
+ * virtuoso.url=virtuoso://localhost:1111
  * virtuoso.database=ycsb
- * virtuoso.writeConcern=normal
+ * virtuoso.user=ycsb
+ * virtuoso.password=ycsb
  *
  * @author ypai
  *
  */
-public class VirtuosoDbClient extends DB
+public class VirtuosoClient extends DB
 {
 	private VirtGraph virtGraph;
 	private String database;
@@ -56,6 +57,10 @@ public class VirtuosoDbClient extends DB
 		user = props.getProperty("virtuoso.user");
 		password = props.getProperty("virtuoso.password");
 
+		System.out.println("Y1 " + url);
+		System.out.println("Y2 " + database);
+		System.out.println("Y3 " + user);
+		System.out.println("Y4 " + password);
 		try
 		{
 //			virtGraph = new VirtGraph("jdbc:virtuoso://localhost:1111", "dba", "dba");
