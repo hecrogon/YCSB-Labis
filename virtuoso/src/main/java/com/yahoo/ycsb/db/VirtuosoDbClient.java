@@ -1,7 +1,7 @@
 /**
  * VirtuosoDB client binding for YCSB.
  *
- * Submitted by Yen Pai on 5/11/2010.
+ * Submitted on 24/6/2012.
  *
  * https://gist.github.com/000a66b8db2caf42467b#file_mongo_db.java
  *
@@ -23,7 +23,7 @@ import virtuoso.jena.driver.*;
 import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.ByteIterator;
-//import com.yahoo.ycsb.workloads.QueryVirtuosoDbWorkload;
+import com.yahoo.ycsb.workloads.QueryVirtuosoWorkload;
 
 /**
  * VirtuosoDB client for YCSB framework.
@@ -109,11 +109,13 @@ public class VirtuosoDbClient extends DB
 	 * @param result A HashMap of field/value pairs for the result
 	 * @return Zero on success, a non-zero error code on error or "not found".
 	 */
-	public int read(String table, String key, Set<String> fields,
-			HashMap<String, ByteIterator> result) {
-
+	public int read(String table, String key, Set<String> fields, HashMap<String, ByteIterator> result)
+	{
 		try
 		{
+			HashMap<String, String> query = (HashMap<String, String>)QueryVirtuosoWorkload.filters.get(key);
+
+//			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
 			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
@@ -207,22 +209,31 @@ public class VirtuosoDbClient extends DB
 	 */
 	public int scan(String table, String startkey, int recordcount, Set<String> fields, Vector<HashMap<String, ByteIterator>> result)
 	{
-		Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
-
-		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
-
-		ResultSet results = vqe.execSelect();
-      while (results.hasNext())
+		try
 		{
-			QuerySolution res = results.nextSolution();
-			RDFNode graph = res.get("graph");
-			RDFNode s = res.get("s");
-			RDFNode p = res.get("p");
-			RDFNode o = res.get("o");
-			System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
+			Query sparql = QueryFactory.create("SELECT * WHERE { GRAPH ?graph { ?s ?p ?o } } limit 100");
+
+			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
+
+			ResultSet queryResult = vqe.execSelect();
+			while (queryResult.hasNext())
+			{
+				QuerySolution res = queryResult.nextSolution();
+				RDFNode graph = res.get("graph");
+				RDFNode s = res.get("s");
+				RDFNode p = res.get("p");
+				RDFNode o = res.get("o");
+				System.out.println(graph + " { " + s + " " + p + " " + o + " . }");
+			}
+
+			return queryResult != null ? 0 : 1;
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.toString());
+			return 1;
 		}
 
-		return 0;
 /*
 		com.mongodb.DB db=null;
 		try {

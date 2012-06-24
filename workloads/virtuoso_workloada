@@ -1,0 +1,160 @@
+# Copyright (c) 2010 Yahoo! Inc. All rights reserved.                                                                                                                             
+#                                                                                                                                                                                 
+# Licensed under the Apache License, Version 2.0 (the "License"); you                                                                                                             
+# may not use this file except in compliance with the License. You                                                                                                                
+# may obtain a copy of the License at                                                                                                                                             
+#                                                                                                                                                                                 
+# http://www.apache.org/licenses/LICENSE-2.0                                                                                                                                      
+#                                                                                                                                                                                 
+# Unless required by applicable law or agreed to in writing, software                                                                                                             
+# distributed under the License is distributed on an "AS IS" BASIS,                                                                                                               
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or                                                                                                                 
+# implied. See the License for the specific language governing                                                                                                                    
+# permissions and limitations under the License. See accompanying                                                                                                                 
+# LICENSE file.                                                                                                                                                                   
+
+
+# Yahoo! Cloud System Benchmark
+# Workload A: Update heavy workload
+#   Application example: Session store recording recent actions
+#                        
+#   Read/update ratio: 50/50
+#   Default data size: 1 KB records (10 fields, 100 bytes each, plus key)
+#   Request distribution: zipfian
+
+workload=com.yahoo.ycsb.workloads.QueryVirtuosoWorkload
+
+virtuoso.url=jdbc:virtuoso://localhost:1111
+virtuoso.database=artedb
+virtuoso.user=arteuser
+virtuoso.password=artepassword
+
+# 1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576
+recordcount=59386170
+operationcount=16384
+threadcount=32
+
+#target=100
+
+readallfields=true
+
+minscanlength=1
+maxscanlength=1
+
+readproportion=1
+scanproportion=0
+
+requestdistribution=uniform
+
+queries=\
+	{"PROVINCIA":"ALAVA"};\
+	{"PROVINCIA":"ALBACETE"};\
+	{"PROVINCIA":"ALICANTE_ALACANT"};\
+	{"PROVINCIA":"ALMERIA"};\
+	{"PROVINCIA":"AVILA"};\
+	{"PROVINCIA":"BADAJOZ"};\
+	{"PROVINCIA":"BALEARS_ILLES"};\
+	{"PROVINCIA":"BARCELONA"};\
+	{"PROVINCIA":"BURGOS"};\
+	{"PROVINCIA":"CACERES"};\
+	{"PROVINCIA":"CADIZ"};\
+	{"PROVINCIA":"CASTELLON_CASTELLO"};\
+	{"PROVINCIA":"CIUDAD_REAL"};\
+	{"PROVINCIA":"CORDOBA"};\
+	{"PROVINCIA":"CORUNA_A"};\
+	{"PROVINCIA":"CUENCA"};\
+	{"PROVINCIA":"GIRONA"};\
+	{"PROVINCIA":"GRANADA"};\
+	{"PROVINCIA":"GUADALAJARA"};\
+	{"PROVINCIA":"GUIPUZCOA"};\
+	{"PROVINCIA":"HUELVA"};\
+	{"PROVINCIA":"HUESCA"};\
+	{"PROVINCIA":"JAEN"};\
+	{"PROVINCIA":"LEON"};\
+	{"PROVINCIA":"LLEIDA"};\
+	{"PROVINCIA":"RIOJA_LA"};\
+	{"PROVINCIA":"LUGO"};\
+	{"PROVINCIA":"MADRID"};\
+	{"PROVINCIA":"MALAGA"};\
+	{"PROVINCIA":"MURCIA"};\
+	{"PROVINCIA":"NAVARRA"};\
+	{"PROVINCIA":"OURENSE"};\
+	{"PROVINCIA":"ASTURIAS"};\
+	{"PROVINCIA":"PALENCIA"};\
+	{"PROVINCIA":"PALMAS_LAS"};\
+	{"PROVINCIA":"PONTEVEDRA"};\
+	{"PROVINCIA":"SALAMANCA"};\
+	{"PROVINCIA":"S_C_TENERIFE"};\
+	{"PROVINCIA":"CANTABRIA"};\
+	{"PROVINCIA":"SEGOVIA"};\
+	{"PROVINCIA":"SEVILLA"};\
+	{"PROVINCIA":"SORIA"};\
+	{"PROVINCIA":"TARRAGONA"};\
+	{"PROVINCIA":"TERUEL"};\
+	{"PROVINCIA":"TOLEDO"};\
+	{"PROVINCIA":"VALENCIA_VAL_NCIA"};\
+	{"PROVINCIA":"VALLADOLID"};\
+	{"PROVINCIA":"VIZCAYA"};\
+	{"PROVINCIA":"ZAMORA"};\
+	{"PROVINCIA":"ZARAGOZA"};\
+	{"PROVINCIA":"CEUTA"};\
+	{"PROVINCIA":"MELILLA"};\
+	{"PROVINCIA":"ALICANTE"};\
+	{"PROVINCIA":"CASTELLON"};\
+	{"PROVINCIA":"VALENCIA"};\
+	{"PROVINCIA":"TOTAL"};\
+	{"PROVINCIA":"LAVA"};\
+	{"PROVINCIA":"ALMER_A"};\
+	{"PROVINCIA":"VILA"};\
+	{"PROVINCIA":"CSSCERES"};\
+	{"PROVINCIA":"CSSDIZ"};\
+	{"PROVINCIA":"CASTELL_N_CASTELL"};\
+	{"PROVINCIA":"C_RDOBA"};\
+	{"PROVINCIA":"CORU_A_A"};\
+	{"PROVINCIA":"GUIP_ZCOA"};\
+	{"PROVINCIA":"JAUN"};\
+	{"PROVINCIA":"LE_N"};\
+	{"PROVINCIA":"MSSLAGA"};\
+	{"PROVINCIA":"SANTA_CRUZ_DE_TENERIFE"};\
+	{"PROVINCIA":"CASTELLON_DE_LA_PLANA"};\
+	{"PROVINCIA":"CEUTA_Y_MELILLA"};\
+	{"GRUPO_DE_EDAD":"TOTAL"};\
+	{"GRUPO_DE_EDAD":"18_Y_19"};\
+	{"GRUPO_DE_EDAD":"20_24"};\
+	{"GRUPO_DE_EDAD":"25_29"};\
+	{"GRUPO_DE_EDAD":"30_34"};\
+	{"GRUPO_DE_EDAD":"35_39"};\
+	{"GRUPO_DE_EDAD":"40_44"};\
+	{"GRUPO_DE_EDAD":"45_49"};\
+	{"GRUPO_DE_EDAD":"50_54"};\
+	{"GRUPO_DE_EDAD":"55_59"};\
+	{"GRUPO_DE_EDAD":"60_64"};\
+	{"GRUPO_DE_EDAD":"65_69"};\
+	{"GRUPO_DE_EDAD":"70_74"};\
+	{"GRUPO_DE_EDAD":"75_79"};\
+	{"GRUPO_DE_EDAD":"80_84"};\
+	{"GRUPO_DE_EDAD":"85_Y_MAS"};\
+	{"GRUPO_DE_EDAD":"0_A_4_A_OS"};\
+	{"GRUPO_DE_EDAD":"5_A_9_A_OS"};\
+	{"GRUPO_DE_EDAD":"10_A_14_A_OS"};\
+	{"GRUPO_DE_EDAD":"15_A_19_A_OS"};\
+	{"GRUPO_DE_EDAD":"20_A_24_A_OS"};\
+	{"GRUPO_DE_EDAD":"25_A_29_A_OS"};\
+	{"GRUPO_DE_EDAD":"30_A_34_A_OS"};\
+	{"GRUPO_DE_EDAD":"35_A_39_A_OS"};\
+	{"GRUPO_DE_EDAD":"40_A_44_A_OS"};\
+	{"GRUPO_DE_EDAD":"45_A_49_A_OS"};\
+	{"GRUPO_DE_EDAD":"50_A_54_A_OS"};\
+	{"GRUPO_DE_EDAD":"55_A_59_A_OS"};\
+	{"GRUPO_DE_EDAD":"60_A_64_A_OS"};\
+	{"GRUPO_DE_EDAD":"65_A_69_A_OS"};\
+	{"GRUPO_DE_EDAD":"70_A_74_A_OS"};\
+	{"GRUPO_DE_EDAD":"75_A_79_A_OS"};\
+	{"GRUPO_DE_EDAD":"80_A_84_A_OS"};\
+	{"GRUPO_DE_EDAD":"85_Y_MSSS_A_OS"};\
+	{"GRUPO_DE_EDAD":"16_Y_MAS_ANOS"};\
+	{"GRUPO_DE_EDAD":"DE_16_A_64_ANOS"};\
+	{"SEXO":"MUJERES"};\
+	{"SEXO":"VARONES"};\
+	{"SEXO":"TOTAL"};\
+	{"SEXO":"AMBOS_SEXOS"}
