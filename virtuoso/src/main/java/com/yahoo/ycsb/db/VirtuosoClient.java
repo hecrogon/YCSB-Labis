@@ -60,7 +60,7 @@ public class VirtuosoClient extends DB
 		try
 		{
 //			virtGraph = new VirtGraph("jdbc:virtuoso://localhost:1111", "dba", "dba");
-//			virtGraph = new VirtGraph(url, user, password);
+			virtGraph = new VirtGraph(url, user, password);
 
 			System.out.println("Virtuoso connection created with " + url);
 		}
@@ -116,7 +116,13 @@ public class VirtuosoClient extends DB
 		{
 			String query = (String)QueryVirtuosoWorkload.filters.get(key);
 
-			Query sparql = QueryFactory.create("SELECT * WHERE " + query + " limit 1");
+//			Query sparql = QueryFactory.create("SELECT * WHERE " + query + " limit 1");
+			String s = "prefix : <http://www.w3.org/2000/01/rdf-schema#> ";
+			s += "select ?o ";
+			s += "where ";
+			s += query + "\n";
+System.out.println("Y0 " + s);
+			Query sparql = QueryFactory.create(s);
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 
@@ -165,7 +171,13 @@ public class VirtuosoClient extends DB
 		{
 			String query = (String)QueryVirtuosoWorkload.filters.get(startkey);
 
-			Query sparql = QueryFactory.create("SELECT * WHERE " + query);
+//			Query sparql = QueryFactory.create("SELECT * WHERE " + query);
+			String s = "prefix : <http://www.w3.org/2000/01/rdf-schema#> ";
+			s += "select ?o ";
+			s += "where ";
+			s += query + "\n";
+System.out.println("Y1 " + s);
+			Query sparql = QueryFactory.create(s);
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 

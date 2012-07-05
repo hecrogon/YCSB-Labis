@@ -8,6 +8,7 @@ where {
   ?s ?p3 ?o3 .
 }
 
+WorkloadA
 prefix : <http://www.w3.org/2000/01/rdf-schema#>
 select ?o
 where {
@@ -15,4 +16,20 @@ where {
 	?s ?p "ALAVA" .
 	?s ?p ?o .
 }
+
+
+{ ?p :label "PROVINCIA" . ?s ?p "ALAVA" . ?s ?p ?o . }
+
+
+WorkloadB
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select ?o
+where {
+	?p1 :label "PROVINCIA" .
+	?p2 :label "GRUPO_DE_EDAD" .
+	?s ?p1 "ALAVA" .
+	?s ?p2 "35_A_39_A_OS" .
+	?s ?p2 ?o .
+}
+
 
