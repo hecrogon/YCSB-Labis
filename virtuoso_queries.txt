@@ -1,0 +1,18 @@
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?o3
+where {
+  ?p1 :label "SEXO" .
+  ?s ?p1 ?o1 .
+  ?s ?p1 "AMBOS_SEXOS" .
+  ?p3 :label "DATASET" .
+  ?s ?p3 ?o3 .
+}
+
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select ?o
+where {
+	?p :label "PROVINCIA" .
+	?s ?p "ALAVA" .
+	?s ?p ?o .
+}
+
