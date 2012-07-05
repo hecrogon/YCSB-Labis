@@ -121,7 +121,6 @@ public class VirtuosoClient extends DB
 			s += "select ?o ";
 			s += "where ";
 			s += query + "\n";
-System.out.println("Y0 " + s);
 			Query sparql = QueryFactory.create(s);
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
@@ -176,7 +175,6 @@ System.out.println("Y0 " + s);
 			s += "select ?o ";
 			s += "where ";
 			s += query + "\n";
-System.out.println("Y1 " + s);
 			Query sparql = QueryFactory.create(s);
 
 			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
