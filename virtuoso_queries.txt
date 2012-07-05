@@ -26,10 +26,11 @@ prefix : <http://www.w3.org/2000/01/rdf-schema#>
 select ?o
 where {
 	?p1 :label "PROVINCIA" .
-	?p2 :label "GRUPO_DE_EDAD" .
 	?s ?p1 "ALAVA" .
+	?p2 :label "GRUPO_DE_EDAD" .
 	?s ?p2 "35_A_39_A_OS" .
 	?s ?p2 ?o .
 }
 
+?p1 :label "PROVINCIA" . ?s ?p1 "ALAVA" . ?p2 :label "GRUPO_DE_EDAD" . ?s ?p2 "35_A_39_A_OS" . ?s ?p2 ?o . 
 
