@@ -38,7 +38,7 @@ threadcount=32
 readallfields=true
 
 minscanlength=1
-maxscanlength=1
+maxscanlength=100
 
 readproportion=1
 scanproportion=0
