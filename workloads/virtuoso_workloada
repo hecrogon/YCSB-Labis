@@ -1,0 +1,160 @@
+# Copyright (c) 2010 Yahoo! Inc. All rights reserved.                                                                                                                             
+#                                                                                                                                                                                 
+# Licensed under the Apache License, Version 2.0 (the "License"); you                                                                                                             
+# may not use this file except in compliance with the License. You                                                                                                                
+# may obtain a copy of the License at                                                                                                                                             
+#                                                                                                                                                                                 
+# http://www.apache.org/licenses/LICENSE-2.0                                                                                                                                      
+#                                                                                                                                                                                 
+# Unless required by applicable law or agreed to in writing, software                                                                                                             
+# distributed under the License is distributed on an "AS IS" BASIS,                                                                                                               
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or                                                                                                                 
+# implied. See the License for the specific language governing                                                                                                                    
+# permissions and limitations under the License. See accompanying                                                                                                                 
+# LICENSE file.                                                                                                                                                                   
+
+
+# Yahoo! Cloud System Benchmark
+# Workload A: Update heavy workload
+#   Application example: Session store recording recent actions
+#                        
+#   Read/update ratio: 50/50
+#   Default data size: 1 KB records (10 fields, 100 bytes each, plus key)
+#   Request distribution: zipfian
+
+workload=com.yahoo.ycsb.workloads.QueryVirtuosoWorkload
+
+virtuoso.url=jdbc:virtuoso://localhost:1111
+virtuoso.database=artedb
+virtuoso.user=arteuser
+virtuoso.password=artepassword
+
+# 1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576
+recordcount=59386170
+operationcount=16384
+threadcount=32
+
+#target=100
+
+readallfields=true
+
+minscanlength=1
+maxscanlength=1
+
+readproportion=1
+scanproportion=0
+
+requestdistribution=uniform
+
+queries=\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALAVA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALBACETE" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALICANTE_ALACANT" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALMERIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "AVILA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "BADAJOZ" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "BALEARS_ILLES" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "BARCELONA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "BURGOS" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CACERES" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CADIZ" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON_CASTELLO" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CIUDAD_REAL" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CORDOBA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CORUNA_A" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CUENCA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "GIRONA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "GRANADA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "GUADALAJARA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "GUIPUZCOA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "HUELVA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "HUESCA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "JAEN" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "LEON" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "LLEIDA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "RIOJA_LA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "LUGO" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "MADRID" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "MALAGA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "MURCIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "NAVARRA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "OURENSE" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ASTURIAS" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "PALENCIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "PALMAS_LAS" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "PONTEVEDRA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "SALAMANCA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "S_C_TENERIFE" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CANTABRIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "SEGOVIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "SEVILLA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "SORIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "TARRAGONA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "TERUEL" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "TOLEDO" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "VALENCIA_VAL_NCIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "VALLADOLID" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "VIZCAYA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ZAMORA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ZARAGOZA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CEUTA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "MELILLA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALICANTE" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "VALENCIA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "TOTAL" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "LAVA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "ALMER_A" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "VILA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CSSCERES" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CSSDIZ" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CASTELL_N_CASTELL" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "C_RDOBA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CORU_A_A" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "GUIP_ZCOA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "JAUN" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "LE_N" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "MSSLAGA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "SANTA_CRUZ_DE_TENERIFE" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON_DE_LA_PLANA" . ?s ?p ?o . };\
+	{ ?p :label "PROVINCIA" . ?s ?p "CEUTA_Y_MELILLA" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "TOTAL" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "18_Y_19" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "20_24" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "25_29" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "30_34" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "35_39" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "40_44" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "45_49" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "50_54" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "55_59" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "60_64" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "65_69" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "70_74" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "75_79" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "80_84" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MAS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "0_A_4_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "5_A_9_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "10_A_14_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "15_A_19_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "20_A_24_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "25_A_29_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "30_A_34_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "35_A_39_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "40_A_44_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "45_A_49_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "50_A_54_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "55_A_59_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "60_A_64_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "65_A_69_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "70_A_74_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "75_A_79_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "80_A_84_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MSSS_A_OS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "16_Y_MAS_ANOS" . ?s ?p ?o . };\
+	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "DE_16_A_64_ANOS" . ?s ?p ?o . };\
+	{ ?p :label "SEXO" . ?s ?p "MUJERES" . ?s ?p ?o . };\
+	{ ?p :label "SEXO" . ?s ?p "VARONES" . ?s ?p ?o . };\
+	{ ?p :label "SEXO" . ?s ?p "TOTAL" . ?s ?p ?o . };\
+	{ ?p :label "SEXO" . ?s ?p "AMBOS_SEXOS"};

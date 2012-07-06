@@ -1,0 +1,36 @@
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?o3
+where {
+  ?p1 :label "SEXO" .
+  ?s ?p1 ?o1 .
+  ?s ?p1 "AMBOS_SEXOS" .
+  ?p3 :label "DATASET" .
+  ?s ?p3 ?o3 .
+}
+
+WorkloadA
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select ?o
+where {
+	?p :label "PROVINCIA" .
+	?s ?p "ALAVA" .
+	?s ?p ?o .
+}
+
+
+{ ?p :label "PROVINCIA" . ?s ?p "ALAVA" . ?s ?p ?o . }
+
+
+WorkloadB
+prefix : <http://www.w3.org/2000/01/rdf-schema#>
+select ?o
+where {
+	?p1 :label "PROVINCIA" .
+	?s ?p1 "ALAVA" .
+	?p2 :label "GRUPO_DE_EDAD" .
+	?s ?p2 "35_A_39_A_OS" .
+	?s ?p2 ?o .
+}
+
+?p1 :label "PROVINCIA" . ?s ?p1 "ALAVA" . ?p2 :label "GRUPO_DE_EDAD" . ?s ?p2 "35_A_39_A_OS" . ?s ?p2 ?o . 
+
