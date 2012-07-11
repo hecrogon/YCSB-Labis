@@ -10,19 +10,17 @@
 package com.yahoo.ycsb.db;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-
 import virtuoso.jena.driver.*;
 
 import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.ByteIterator;
+import com.yahoo.ycsb.StringByteIterator;
 import com.yahoo.ycsb.workloads.QueryVirtuosoWorkload;
 
 /**
@@ -31,7 +29,6 @@ import com.yahoo.ycsb.workloads.QueryVirtuosoWorkload;
  * Properties to set:
  *
  * virtuoso.url=virtuoso://localhost:1111
- * virtuoso.database=ycsb
  * virtuoso.user=ycsb
  * virtuoso.password=ycsb
  *
@@ -41,7 +38,6 @@ import com.yahoo.ycsb.workloads.QueryVirtuosoWorkload;
 public class VirtuosoClient extends DB
 {
 	private VirtGraph virtGraph;
-	private String database;
 	private String user;
 	private String password;
 
@@ -53,16 +49,14 @@ public class VirtuosoClient extends DB
 	{
 		Properties props = getProperties();
 		String url = props.getProperty("virtuoso.url");
-		database = props.getProperty("virtuoso.database");
+		props.getProperty("virtuoso.database");
 		user = props.getProperty("virtuoso.user");
 		password = props.getProperty("virtuoso.password");
 
 		try
 		{
-//			virtGraph = new VirtGraph("jdbc:virtuoso://localhost:1111", "dba", "dba");
 			virtGraph = new VirtGraph(url, user, password);
-
-			System.out.println("Virtuoso connection created with " + url);
+			//System.out.println("Virtuoso connection created with " + url);
 		}
 		catch (Exception e1)
 		{
@@ -112,27 +106,27 @@ public class VirtuosoClient extends DB
 	 */
 	public int read(String table, String key, Set<String> fields, HashMap<String, ByteIterator> result)
 	{
+		String query = QueryVirtuosoWorkload.filters.get(key);
+		Query sparql = QueryFactory.create(query);
+		sparql.setLimit(1);
+		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 		try
 		{
-			String query = (String)QueryVirtuosoWorkload.filters.get(key);
-
-//			Query sparql = QueryFactory.create("SELECT * WHERE " + query + " limit 1");
-			String s = "prefix : <http://www.w3.org/2000/01/rdf-schema#> ";
-			s += "select ?o ";
-			s += "where ";
-			s += query + "\n";
-			Query sparql = QueryFactory.create(s);
-
-			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
-
 			ResultSet queryResult = vqe.execSelect();
 
+			QuerySolution solution = queryResult.next();
+			for (String field : queryResult.getResultVars())
+				result.put(field, new StringByteIterator(solution.get(field).toString()));
 			return queryResult != null ? 0 : 1;
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.toString());
+			System.err.println(e.toString() + ":" + query);
 			return 1;
+		}
+		finally
+		{
+			vqe.close();
 		}
 	}
 
@@ -166,27 +160,33 @@ public class VirtuosoClient extends DB
 	 */
 	public int scan(String table, String startkey, int recordcount, Set<String> fields, Vector<HashMap<String, ByteIterator>> result)
 	{
+		String query = QueryVirtuosoWorkload.filters.get(startkey);
+		Query sparql = QueryFactory.create(query);
+		sparql.setLimit(recordcount);
+		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
 		try
 		{
-			String query = (String)QueryVirtuosoWorkload.filters.get(startkey);
-
-//			Query sparql = QueryFactory.create("SELECT * WHERE " + query);
-			String s = "prefix : <http://www.w3.org/2000/01/rdf-schema#> ";
-			s += "select ?o ";
-			s += "where ";
-			s += query + "\n";
-			Query sparql = QueryFactory.create(s);
-
-			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(sparql, virtGraph);
-
 			ResultSet queryResult = vqe.execSelect();
+			for (int i = 0; i < recordcount && queryResult.hasNext(); i++) {
+				QuerySolution solution = queryResult.next();
+				HashMap<String, ByteIterator> values = new HashMap<String, ByteIterator>();
+				for (String field : queryResult.getResultVars()) {
+					String value = solution.get(field).toString();
+					values.put(field, new StringByteIterator(value));
+				}
+				result.add(values);
+			}
 
 			return queryResult != null ? 0 : 1;
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.toString());
+			System.err.println(e.toString() + ":" + query);
 			return 1;
+		}
+		finally
+		{
+			vqe.close();
 		}
 	}
 }

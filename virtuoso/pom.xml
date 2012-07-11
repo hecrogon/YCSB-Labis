@@ -18,45 +18,41 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.mysema.rdf</groupId>
-      <artifactId>rdfbean-virtuoso</artifactId>
-      <version>1.6.1</version>
+    	<groupId>com.hp.hpl.jena</groupId>
+    	<artifactId>jena</artifactId>
+    	<version>2.6.4</version>
+    	<exclusions>
+    		<exclusion>
+    			<artifactId>slf4j-api</artifactId>
+    			<groupId>org.slf4j</groupId>
+    		</exclusion>
+    	</exclusions>
     </dependency>
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>2.6.4</version>
+    	<groupId>com.hp.hpl.jena</groupId>
+    	<artifactId>arq</artifactId>
+    	<version>2.8.8</version>
+    	<exclusions>
+    		<exclusion>
+    			<artifactId>slf4j-api</artifactId>
+    			<groupId>org.slf4j</groupId>
+    		</exclusion>
+    	</exclusions>
     </dependency>
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>2.6.4</version>
+    	<groupId>virtuoso.jena.driver</groupId>
+    	<artifactId>virt_jena</artifactId>
+    	<version>2.6.2</version>
     </dependency>
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <version>2.6.0</version>
+    	<groupId>virtuoso.jdbc3</groupId>
+    	<artifactId>virtuoso_jdbc3</artifactId>
+    	<version>3.0.0</version>
     </dependency>
     <dependency>
-      <groupId>virtuoso.jena.driver</groupId>
-      <artifactId>virt_jena</artifactId>
-      <version>3.0.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/virt_jena.jar</systemPath>
-    </dependency>
-
-
-<!--
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>2.9.0-incubating</version>
-   </dependency>
--->
-    <dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-mapper-asl</artifactId>
-    	<version>1.9.4</version>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-api</artifactId>
+    	<version>1.5.8</version>
     </dependency>
   </dependencies>
  

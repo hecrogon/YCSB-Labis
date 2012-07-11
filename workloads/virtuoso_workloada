@@ -24,15 +24,15 @@
 
 workload=com.yahoo.ycsb.workloads.QueryVirtuosoWorkload
 
-virtuoso.url=jdbc:virtuoso://localhost:1111
-virtuoso.database=artedb
-virtuoso.user=arteuser
-virtuoso.password=artepassword
+virtuoso.url=jdbc:virtuoso://192.168.0.15:1111
+virtuoso.user=dba
+virtuoso.password=dba
 
 # 1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576
 recordcount=59386170
-operationcount=16384
-threadcount=32
+operationcount=32
+#16384
+threadcount=1
 
 #target=100
 
@@ -46,115 +46,118 @@ scanproportion=0
 
 requestdistribution=uniform
 
+queriesprefix=\
+	prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
 queries=\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALAVA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALBACETE" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALICANTE_ALACANT" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALMERIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "AVILA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "BADAJOZ" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "BALEARS_ILLES" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "BARCELONA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "BURGOS" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CACERES" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CADIZ" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON_CASTELLO" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CIUDAD_REAL" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CORDOBA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CORUNA_A" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CUENCA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "GIRONA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "GRANADA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "GUADALAJARA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "GUIPUZCOA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "HUELVA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "HUESCA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "JAEN" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "LEON" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "LLEIDA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "RIOJA_LA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "LUGO" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "MADRID" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "MALAGA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "MURCIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "NAVARRA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "OURENSE" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ASTURIAS" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "PALENCIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "PALMAS_LAS" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "PONTEVEDRA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "SALAMANCA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "S_C_TENERIFE" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CANTABRIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "SEGOVIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "SEVILLA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "SORIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "TARRAGONA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "TERUEL" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "TOLEDO" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "VALENCIA_VAL_NCIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "VALLADOLID" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "VIZCAYA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ZAMORA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ZARAGOZA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CEUTA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "MELILLA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALICANTE" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "VALENCIA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "TOTAL" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "LAVA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "ALMER_A" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "VILA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CSSCERES" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CSSDIZ" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CASTELL_N_CASTELL" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "C_RDOBA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CORU_A_A" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "GUIP_ZCOA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "JAUN" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "LE_N" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "MSSLAGA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "SANTA_CRUZ_DE_TENERIFE" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CASTELLON_DE_LA_PLANA" . ?s ?p ?o . };\
-	{ ?p :label "PROVINCIA" . ?s ?p "CEUTA_Y_MELILLA" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "TOTAL" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "18_Y_19" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "20_24" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "25_29" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "30_34" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "35_39" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "40_44" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "45_49" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "50_54" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "55_59" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "60_64" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "65_69" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "70_74" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "75_79" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "80_84" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MAS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "0_A_4_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "5_A_9_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "10_A_14_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "15_A_19_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "20_A_24_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "25_A_29_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "30_A_34_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "35_A_39_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "40_A_44_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "45_A_49_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "50_A_54_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "55_A_59_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "60_A_64_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "65_A_69_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "70_A_74_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "75_A_79_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "80_A_84_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MSSS_A_OS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "16_Y_MAS_ANOS" . ?s ?p ?o . };\
-	{ ?p :label "GRUPO_DE_EDAD" . ?s ?p "DE_16_A_64_ANOS" . ?s ?p ?o . };\
-	{ ?p :label "SEXO" . ?s ?p "MUJERES" . ?s ?p ?o . };\
-	{ ?p :label "SEXO" . ?s ?p "VARONES" . ?s ?p ?o . };\
-	{ ?p :label "SEXO" . ?s ?p "TOTAL" . ?s ?p ?o . };\
-	{ ?p :label "SEXO" . ?s ?p "AMBOS_SEXOS"};
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALAVA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALBACETE" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALICANTE_ALACANT" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALMERIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "AVILA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "BADAJOZ" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "BALEARS_ILLES" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "BARCELONA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "BURGOS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CACERES" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CADIZ" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CASTELLON_CASTELLO" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CIUDAD_REAL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CORDOBA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CORUNA_A" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CUENCA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "GIRONA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "GRANADA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "GUADALAJARA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "GUIPUZCOA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "HUELVA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "HUESCA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "JAEN" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "LEON" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "LLEIDA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "RIOJA_LA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "LUGO" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "MADRID" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "MALAGA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "MURCIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "NAVARRA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "OURENSE" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ASTURIAS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "PALENCIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "PALMAS_LAS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "PONTEVEDRA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "SALAMANCA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "S_C_TENERIFE" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CANTABRIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "SEGOVIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "SEVILLA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "SORIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "TARRAGONA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "TERUEL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "TOLEDO" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "VALENCIA_VAL_NCIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "VALLADOLID" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "VIZCAYA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ZAMORA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ZARAGOZA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CEUTA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "MELILLA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALICANTE" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CASTELLON" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "VALENCIA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "TOTAL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALAVA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "ALMER_A" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "VILA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CSSCERES" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CSSDIZ" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CASTELL_N_CASTELL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "C_RDOBA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CORU_A_A" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "GUIPUZCOA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "JAUN" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "LE_N" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "MSSLAGA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "SANTA_CRUZ_DE_TENERIFE" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CASTELLON_DE_LA_PLANA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "PROVINCIA" . ?s ?p "CEUTA_Y_MELILLA" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "TOTAL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "18_Y_19" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "20_24" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "25_29" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "30_34" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "35_39" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "40_44" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "45_49" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "50_54" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "55_59" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "60_64" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "65_69" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "70_74" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "75_79" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "80_84" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MAS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "0_A_4_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "5_A_9_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "10_A_14_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "15_A_19_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "20_A_24_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "25_A_29_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "30_A_34_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "35_A_39_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "40_A_44_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "45_A_49_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "50_A_54_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "55_A_59_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "60_A_64_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "65_A_69_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "70_A_74_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "75_A_79_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "80_A_84_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "85_Y_MSSS_A_OS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "16_Y_MAS_ANOS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "GRUPO_DE_EDAD" . ?s ?p "DE_16_A_64_ANOS" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "SEXO" . ?s ?p "MUJERES" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "SEXO" . ?s ?p "VARONES" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "SEXO" . ?s ?p "TOTAL" } };\
+	select ?s ?p ?o where { graph ?g { ?s ?p ?o . ?p rdfs:label "SEXO" . ?s ?p "AMBOS_SEXOS" } }

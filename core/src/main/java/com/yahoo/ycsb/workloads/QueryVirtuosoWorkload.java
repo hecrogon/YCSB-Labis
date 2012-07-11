@@ -98,8 +98,6 @@ public class QueryVirtuosoWorkload extends Workload
 	IntegerGenerator scanlength;
 	
 	boolean debug;
-
-	public static String table;
 	
 	public static HashMap<String, String> filters;
 
@@ -122,10 +120,12 @@ public class QueryVirtuosoWorkload extends Workload
 		String scanlengthdistrib=p.getProperty(SCAN_LENGTH_DISTRIBUTION_PROPERTY,SCAN_LENGTH_DISTRIBUTION_PROPERTY_DEFAULT);
 		debug=Boolean.parseBoolean(p.getProperty(DEBUG_PROPERTY,DEBUG_PROPERTY_DEFAULT));
 
+		String prefix = p.getProperty("queriesprefix");
 		String[] queries = p.getProperty("queries").split(";");
+		
 		for (int i = 0; i < queries.length; i++)
 		{
-			filters.put(String.valueOf(i), queries[i]);
+			filters.put(String.valueOf(i), prefix + " " + queries[i]);
 		}
 
 		operationchooser=new DiscreteGenerator();
@@ -183,15 +183,13 @@ public class QueryVirtuosoWorkload extends Workload
 
 	public void doTransactionRead(DB db)
 	{
-		table = "artepxs";
-
 		HashMap<String, ByteIterator> results = new HashMap<String, ByteIterator>();
 
 		Random random = new Random();
 		int max = filters.size();
 		int queryNum = random.nextInt(max);
 
-		int resSize = db.read(table, String.valueOf(queryNum), null, results);
+		int resSize = db.read(null, String.valueOf(queryNum), null, results);
 
 		if (debug)
 			System.out.printf("Read::%s::%d::%d\n", 
@@ -200,8 +198,6 @@ public class QueryVirtuosoWorkload extends Workload
 
 	public void doTransactionScan(DB db)
 	{
-		table = "artepxs";
-
 		Vector<HashMap<String, ByteIterator>> results = new Vector<HashMap<String, ByteIterator>>();
 
 		Random random = new Random();
@@ -210,7 +206,7 @@ public class QueryVirtuosoWorkload extends Workload
 
 		int len=scanlength.nextInt();
 
-		db.scan(table, String.valueOf(queryNum), len, null, results);
+		db.scan(null, String.valueOf(queryNum), len, null, results);
 
 		if (debug)
 			System.out.printf("Scan::%s::%d::%d::%d\n", 
